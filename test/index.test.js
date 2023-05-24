@@ -21,7 +21,7 @@ describe('Test Sharepoint Migration', () => {
     // change working directory back to original
     process.chdir('../..');
     // remove temp folder
-    //fs.removeSync(tmpdir);
+    fs.removeSync(tmpdir);
   });
 
   it('should not include a docx file in the end', async () => {
