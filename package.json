@@ -18,5 +18,8 @@
   "homepage": "https://github.com/elc9aya2ls612j/sharepoint-migrator#readme",
   "dependencies": {
     "mammoth": "^1.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }
