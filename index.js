@@ -2,46 +2,52 @@ import { convertToHtml } from "mammoth";
 import { JSDOM } from "jsdom";
 import pkg from 'exceljs';
 const { Workbook } = pkg;
+import * as fs from 'node:fs/promises';
 
 export async function main(source, target, placeholders) {
-
-await convertToHtml({path: source})
-    .then(function(result){
-        var html = result.value; 
-        var dom = new JSDOM(html);
-        var table = dom.window.document.querySelector("table");
-        const dict = [];
-        const launchDict = [];
-        if (table) {
-          table.querySelectorAll('tr').forEach(tr =>  {
-            const key = tr.querySelector('td');
-            const value = tr.querySelector('td:nth-child(2)');
-            if (key) {
-              const keyString = key.textContent;
-              (keyString.startsWith("Adobe Launch") ? launchDict : dict)
-                .push([keyString, value ? value.textContent : '']);
-            }
-          });
+  let converted;
+  try {
+    converted = await convertToHtml({path: source});
+  } catch {
+    console.log("No config/analytics.docx");
+  }
+  const html = converted.value;
+  var dom = new JSDOM(html);
+  var table = dom.window.document.querySelector("table");
+  const dict = [];
+  const launchDict = [];
+  if (table) {
+    table.querySelectorAll('tr').forEach(tr =>  {
+      const key = tr.querySelector('td');
+      const value = tr.querySelector('td:nth-child(2)');
+      if (key) {
+        const keyString = key.textContent;
+        const valueString = value ? value.textContent : '';
+        if (keyString === "Adobe Launch - Dev") {
+          launchDict.push(["launch-non-production-url", valueString]);
+        } else if (keyString === "Adobe Launch - Prod") {
+          launchDict.push(["launch-production-url", valueString]);
+        } else {
+          dict.push([keyString, valueString]);
         }
-        const workbook = new Workbook();
-        const worksheet = workbook.addWorksheet('Sheet 1');
-        worksheet.addRows(dict);
-        return workbook.xlsx.writeFile(target).then(() => {
-          const placeholderWorkbook = new Workbook();
-          if (launchDict.length > 0) {
-            return placeholderWorkbook.xlsx.readFile(placeholders).then(() => {
-              const placeholderSheet = placeholderWorkbook.getWorksheet(1);
-              placeholderSheet.addRows(launchDict);
-              return placeholderWorkbook.xlsx.writeFile(placeholders);
-            }).catch(()=> {
-              const placeholderSheet = placeholderWorkbook.addWorksheet('Sheet 1');
-              placeholderSheet.addRows(launchDict);
-              return placeholderWorkbook.xlsx.writeFile(placeholders);
-            });
-          }
-        });
-    })
-    .catch(function(error) {
-        console.error(error);
+      }
     });
   }
+  const workbook = new Workbook();
+  const worksheet = workbook.addWorksheet('Sheet 1');
+  worksheet.addRows(dict);
+  await workbook.xlsx.writeFile(target);
+  const placeholderWorkbook = new Workbook();
+  let placeholderSheet;
+  if (launchDict.length > 0) {
+    try {
+      await placeholderWorkbook.xlsx.readFile(placeholders);
+      placeholderSheet = placeholderWorkbook.getWorksheet(1);
+    } catch {
+      placeholderSheet = placeholderWorkbook.addWorksheet('Sheet 1');
+    }
+    placeholderSheet.addRows(launchDict);
+    await placeholderWorkbook.xlsx.writeFile(placeholders);
+  }
+  await fs.unlink(source);
+}
