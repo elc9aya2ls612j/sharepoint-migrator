@@ -1,13 +1,15 @@
 import fs from 'fs-extra'
 import {main}  from '../index.js';
+import { expect } from 'chai';
 /* eslint-env: mocha */
 
 describe('Test Sharepoint Migration', () => {
   let tmpdir;
+  let date = Date.now();
 
   beforeEach(() => {
     // create temp folder
-    tmpdir = './test/temp-' + Date.now();
+    tmpdir = './test/temp-' + date;
     fs.mkdirSync(tmpdir);
     // copy test fixtures recursively
     fs.copySync('./test/fixtures', tmpdir);
@@ -20,11 +22,15 @@ describe('Test Sharepoint Migration', () => {
     process.chdir('../..');
     // remove temp folder
     fs.removeSync(tmpdir);
-    
   });
 
   it('should run a test', async () => {
     await main("example-site/config/analytics.docx", "example-site/config/analytics.xlsx", "example-site/placeholders.xlsx");
     console.log('Test');
+  });
+
+  it('should not include a docx file in the end', async () => {
+    let exists = await fs.existsSync(`./../temp-${date}/example-site/config/analytics.docx`);
+    expect(exists).to.equal(false);
   });
 });
