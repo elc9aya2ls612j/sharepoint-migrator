@@ -15,10 +15,11 @@ describe('Test Sharepoint Migration', () => {
   });
 
   afterEach(() => {
-    // remove temp folder
-    fs.removeSync(tmpdir);
     // change working directory back to original
     process.chdir('../..');
+    // remove temp folder
+    fs.removeSync(tmpdir);
+    
   });
 
   it('should run a test', () => {
