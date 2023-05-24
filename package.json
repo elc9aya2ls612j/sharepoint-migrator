@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Migrate a Sharepoint content snapshot to another version",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "mocha"
   },
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/elc9aya2ls612j/sharepoint-migrator#readme",
   "dependencies": {
+    "fs-extra": "^11.1.1",
     "mammoth": "^1.5.1"
   },
   "devDependencies": {
