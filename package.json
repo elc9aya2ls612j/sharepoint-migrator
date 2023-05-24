@@ -1,0 +1,19 @@
+{
+  "name": "sharepoint-migrator",
+  "version": "1.0.0",
+  "description": "Migrate a Sharepoint content snapshot to another version",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elc9aya2ls612j/sharepoint-migrator.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elc9aya2ls612j/sharepoint-migrator/issues"
+  },
+  "homepage": "https://github.com/elc9aya2ls612j/sharepoint-migrator#readme"
+}
