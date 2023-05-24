@@ -25,19 +25,19 @@ describe('Test Sharepoint Migration', () => {
   });
 
   it('should not include a docx file in the end', async () => {
-    await main("example-site/config/analytics.docx", "example-site/analytics.xlsx", "example-site/placeholders.xlsx");
+    await main("example-site/config/analytics.docx", "example-site/global/analytics.xlsx", "example-site/placeholders.xlsx");
     let exists = await fs.existsSync(`./../temp-${date}/example-site/config/analytics.docx`);
     expect(exists).to.equal(false);
   });
 
   it('should include a xlsx file in the end', async () => {
-    await main("example-site/config/analytics.docx", "example-site/analytics.xlsx", "example-site/placeholders.xlsx");
-    let exists = await fs.existsSync(`./../temp-${date}/example-site/analytics.xlsx`);
+    await main("example-site/config/analytics.docx", "example-site/global/analytics.xlsx", "example-site/placeholders.xlsx");
+    let exists = await fs.existsSync(`./../temp-${date}/example-site/global/analytics.xlsx`);
     expect(exists).to.equal(true);
   });
 
   it('should include a placeholders file in the end', async () => {
-    await main("example-site/config/analytics.docx", "example-site/analytics.xlsx", "example-site/placeholders.xlsx");
+    await main("example-site/config/analytics.docx", "example-site/global/analytics.xlsx", "example-site/placeholders.xlsx");
     let exists = await fs.existsSync(`./../temp-${date}/example-site/placeholders.xlsx`);
     expect(exists).to.equal(true);
   });

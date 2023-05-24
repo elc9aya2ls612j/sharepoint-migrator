@@ -3,6 +3,7 @@ import { JSDOM } from "jsdom";
 import pkg from 'exceljs';
 const { Workbook } = pkg;
 import * as fs from 'node:fs/promises';
+import path from "node:path";
 
 export async function main(source, target, placeholders) {
   let converted;
@@ -36,6 +37,7 @@ export async function main(source, target, placeholders) {
   const workbook = new Workbook();
   const worksheet = workbook.addWorksheet('Sheet 1');
   worksheet.addRows(dict);
+  await fs.mkdir(path.dirname(target), { recursive: true });
   await workbook.xlsx.writeFile(target);
   const placeholderWorkbook = new Workbook();
   let placeholderSheet;
