@@ -1,4 +1,5 @@
 import fs from 'fs-extra'
+import {main}  from '../index.js';
 /* eslint-env: mocha */
 
 describe('Test Sharepoint Migration', () => {
@@ -22,7 +23,8 @@ describe('Test Sharepoint Migration', () => {
     
   });
 
-  it('should run a test', () => {
+  it('should run a test', async () => {
+    await main("example-site/config/analytics.docx", "example-site/config/analytics.xlsx", "example-site/placeholders.xlsx");
     console.log('Test');
   });
 });
